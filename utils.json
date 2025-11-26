@@ -1,0 +1,16 @@
+{
+    "web": {
+        "client_id": "62962452230-n0p9v8v2amafl447cm2kjsdt4jdevol3.apps.googleusercontent.com",
+        "project_id": "easy-express-479414",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_secret": "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",
+        "redirect_uris": [
+            "http://localhost:3000"
+        ],
+        "javascript_origins": [
+            "http://localhost:3000"
+        ]
+    }
+}
