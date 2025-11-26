@@ -1,4 +1,4 @@
-// controllers/userController.ts
+// controllers/userController.js
 import { prisma } from "../prisma.js";
 
 export const getUsers = async (req, res) => {
