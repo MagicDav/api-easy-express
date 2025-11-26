@@ -1,8 +1,9 @@
-// routes/userRoutes.ts
-import { Router } from "express";
-import { getUsers, createUser } from "../controllers/userControllers.js";
+import { Router } from 'express';
+import { registerUser, loginUser, getuserauth } from '../controllers/userControllers.js';
+import { authMiddleware } from '../middlewares/authMiddleware.js';
 
 export const userRoutes = Router();
 
-userRoutes.get("/", getUsers);
-userRoutes.post("/crear", createUser);
+userRoutes.post('/register', registerUser);
+userRoutes.post('/login', loginUser);
+userRoutes.get('/auth', authMiddleware, getuserauth);
