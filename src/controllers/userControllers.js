@@ -2,6 +2,7 @@ import { prisma } from '../prisma.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
+import { transporter } from '../config/emailServer.js'; // seu transportador SMTP
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
@@ -63,9 +64,8 @@ export const getUserById = async (req, res) => {
   }
 };
 
-  
-// -----------------------
-// REGISTER (email/senha)
+ // -----------------------
+// REGISTER com verificação de e-mail
 // -----------------------
 export const registerUser = async (req, res) => {
   try {
@@ -88,11 +88,38 @@ export const registerUser = async (req, res) => {
 
     const hashedPassword = password ? await bcrypt.hash(password, 10) : null;
 
+    // Criar usuário com campo isVerified false
     const user = await prisma.user.create({
-      data: { name, email, phone, password: hashedPassword, role }
+      data: { name, email, phone, password: hashedPassword, role, isVerified: false }
     });
 
-    res.json({ token: generateToken(user), user });
+    // Gerar token de verificação único
+    const verifyToken = crypto.randomBytes(32).toString('hex');
+
+    // Salvar token na tabela de verificação (ou no próprio usuário)
+    await prisma.emailVerification.create({
+      data: {
+        userId: user.id,
+        token: verifyToken,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24h
+      }
+    });
+
+    // Enviar e-mail de verificação
+    if (email) {
+      await transporter.sendMail({
+        from: '"Easy Express" Plataforma de Vendas <',
+        to: user.email,
+        subject: "Verifique seu e-mail",
+        html: `<p>Olá ${user.name},</p>
+               <p>Clique no link abaixo para verificar seu e-mail:</p>
+               <a href="https://seu-frontend.com/verify-email?token=${verifyToken}">Verificar e-mail</a>
+               <p>O link expira em 24 horas.</p>`
+      });
+    }
+
+    res.json({ message: "Usuário cadastrado com sucesso! Verifique seu e-mail.", user });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
