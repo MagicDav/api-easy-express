@@ -14,58 +14,71 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  name       String
-  email      String   @unique
-  password   String
-  phone      String?  @unique
-  googleId   String?  @unique
-  role       UserRole @default(CLIENT)
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
+  password String
+  phone    String?  @unique
+  googleId String?  @unique
+  role     UserRole @default(CLIENT)
 
   products   Product[]
   orders     Order[]
   deliveries Delivery[]
-  
-  createdAt  DateTime @default(now())
+
+  createdAt         DateTime            @default(now())
+  EmailVerification EmailVerification[]
+}
+
+model EmailVerification {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
 }
 
 model Product {
-  id          String   @id @default(uuid())
-  name        String
-  price       Float
-  image       String?
-  sellerId    String
-  seller      User     @relation(fields: [sellerId], references: [id])
-  createdAt   DateTime @default(now())
+  id        String   @id @default(uuid())
+  name      String
+  price     Float
+  image     String?
+  sellerId  String
+  seller    User     @relation(fields: [sellerId], references: [id])
+  createdAt DateTime @default(now())
 
-  orders      Order[]
+  orders Order[]
 }
 
 model Order {
-  id         String   @id @default(uuid())
-  productId  String
-  userId     String
-  status     OrderStatus @default(PENDING)
+  id        String      @id @default(uuid())
+  productId String
+  userId    String
+  status    OrderStatus @default(PENDING)
 
-  product    Product @relation(fields: [productId], references: [id])
-  user       User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
-  delivery   Delivery?
+  delivery Delivery?
 
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Delivery {
-  id          String @id @default(uuid())
-  orderId     String @unique
-  deliverId   String?
-  qrCode      String?
-  status      DeliveryStatus @default(WAITING)
+  id        String         @id @default(uuid())
+  orderId   String         @unique
+  deliverId String?
+  qrCode    String?
+  status    DeliveryStatus @default(WAITING)
 
-  order       Order @relation(fields: [orderId], references: [id])
-  deliver     User? @relation(fields: [deliverId], references: [id])
+  order   Order @relation(fields: [orderId], references: [id])
+  deliver User? @relation(fields: [deliverId], references: [id])
 
-  createdAt   DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 enum UserRole {
