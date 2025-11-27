@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { OAuth2Client } from "google-auth-library";
 import { transporter } from '../config/emailServer.js'; // seu transportador SMTP
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+import crypto from 'crypto';
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret";
 
