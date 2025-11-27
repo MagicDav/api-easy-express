@@ -109,12 +109,12 @@ export const registerUser = async (req, res) => {
     // Enviar e-mail de verificação
     if (email) {
       await transporter.sendMail({
-        from: '"Easy Express" Plataforma de Vendas <',
+        from: '"Easy Express" <https://dev-fruit-production.up.railway.app/>',
         to: user.email,
         subject: "Verifique seu e-mail",
         html: `<p>Olá ${user.name},</p>
                <p>Clique no link abaixo para verificar seu e-mail:</p>
-               <a href="https://seu-frontend.com/verify-email?token=${verifyToken}">Verificar e-mail</a>
+               <a href="https://dev-fruit-production.up.railway.app/verify-email?token=${verifyToken}">Verificar e-mail</a>
                <p>O link expira em 24 horas.</p>`
       });
     }
