@@ -21,7 +21,8 @@ model User {
   phone    String?  @unique
   googleId String?  @unique
   role     UserRole @default(CLIENT)
-
+  isVerified Boolean @default(false)
+  avatar   String?
   products   Product[]
   orders     Order[]
   deliveries Delivery[]

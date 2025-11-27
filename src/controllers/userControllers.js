@@ -90,7 +90,7 @@ export const registerUser = async (req, res) => {
 
     // Criar usuário com campo isVerified false
     const user = await prisma.user.create({
-      data: { name, email, phone, password: hashedPassword, role, isVerified: false }
+      data: { name, email, phone, password: hashedPassword, role }
     });
 
     // Gerar token de verificação único
